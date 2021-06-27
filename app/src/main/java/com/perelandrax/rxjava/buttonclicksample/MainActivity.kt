@@ -2,7 +2,7 @@ package com.perelandrax.rxjava.buttonclicksample
 
 import android.os.Bundle
 import android.util.Log
-import android.widget.TextView
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun createHelloButtonClickStream() = Observable.create<Unit> { emitter ->
-    findViewById<TextView>(R.id.bt_hello).setOnClickListener {
+    findViewById<Button>(R.id.bt_hello).setOnClickListener {
       if (emitter.isDisposed) return@setOnClickListener
       emitter.onNext(Unit)
     }
