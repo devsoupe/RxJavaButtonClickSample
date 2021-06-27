@@ -10,36 +10,36 @@ import io.reactivex.rxjava3.kotlin.addTo
 
 class MainActivity : AppCompatActivity() {
 
-    companion object {
-        private var TAG = MainActivity::class.java.simpleName
+  companion object {
+    private var TAG = MainActivity::class.java.simpleName
+  }
+
+  private val disposables = CompositeDisposable()
+  private lateinit var helloButtonClickStream: Observable<Unit>
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_main)
+  }
+
+  override fun onStart() {
+    super.onStart()
+
+    helloButtonClickStream = createHelloButtonClickStream()
+    helloButtonClickStream
+      .subscribe { Log.d(TAG, "helloButtonClicked") }
+      .addTo(disposables)
+  }
+
+  private fun createHelloButtonClickStream() = Observable.create<Unit> { emitter ->
+    findViewById<TextView>(R.id.bt_hello).setOnClickListener {
+      if (emitter.isDisposed) return@setOnClickListener
+      emitter.onNext(Unit)
     }
+  }
 
-    private val disposables = CompositeDisposable()
-    private lateinit var helloButtonClickStream: Observable<Unit>
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        helloButtonClickStream = createHelloButtonClickStream()
-        helloButtonClickStream
-            .subscribe { Log.d(TAG, "helloButtonClicked") }
-            .addTo(disposables)
-    }
-
-    private fun createHelloButtonClickStream() = Observable.create<Unit> { emitter ->
-        findViewById<TextView>(R.id.bt_hello).setOnClickListener {
-            if (emitter.isDisposed) return@setOnClickListener
-            emitter.onNext(Unit)
-        }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        disposables.clear()
-    }
+  override fun onStop() {
+    super.onStop()
+    disposables.clear()
+  }
 }
